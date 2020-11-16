@@ -1,4 +1,27 @@
-// Check if a slave has < 10 GB of free space, wipe out workspaces if it does
+/*
+Copyright (c) 2015-2020 Ahamed N - https://github.com/ahamedn/groovy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+/*
+This script will do the workspace cleanup on the Jenkins slave. I've added a whitelist option to skip the slaves which are not required to clean their workspaces.
+*/
 
 import hudson.model.*;
 import hudson.util.*;
@@ -10,7 +33,7 @@ import javax.mail.*
 import javax.mail.internet.*
 
 
-#Whitelisting the slaves which are not required to cleanup the workspace
+//Whitelisting the slaves which are not required to cleanup the workspace
 def MyList=["Slave2, Slave5"]
 
 def sendMail(host, sender, receivers, subject, text) {
