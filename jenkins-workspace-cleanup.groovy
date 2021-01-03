@@ -57,37 +57,42 @@ def sendMail(host, sender, receivers, subject, text) {
 def performCleanup(def node, def items) {
   
   for (item in items) {
-    jobName = item.getFullDisplayName()
-    
-    println("Cleaning " + jobName)
-    
-    if(item instanceof com.cloudbees.hudson.plugins.folder.AbstractFolder) {
-      	performCleanup(node, item.items)
-    	continue
-    }
-    
-    if (item.isBuilding()) {
-      println(".. job " + jobName + " is currently running, skipped")
-      continue
-    }
-    
-    println(".. wiping out workspaces of job " + jobName)
-    
-    workspacePath = node.getWorkspaceFor(item)
-    if (workspacePath == null) {
-      println(".... could not get workspace path")
-      continue
-    }
-    
-    println(".... workspace = " + workspacePath)
-    
-    pathAsString = workspacePath.getRemote()
-    if (workspacePath.exists()) {
-      workspacePath.deleteRecursive()
-      println(".... deleted from location " + pathAsString)
-    } else {
-      println(".... nothing to delete at " + pathAsString)
-    }
+      try {
+          jobName = item.getFullDisplayName()
+          
+          println("Cleaning " + jobName)
+          
+          if(item instanceof com.cloudbees.hudson.plugins.folder.AbstractFolder) {
+              performCleanup(node, item.items)
+              continue
+          }
+          
+          if (item.isBuilding()) {
+              println(".. job " + jobName + " is currently running, skipped")
+              continue
+          }
+          
+          println(".. wiping out workspaces of job " + jobName)
+          
+          workspacePath = node.getWorkspaceFor(item)
+          if (workspacePath == null) {
+              println(".... could not get workspace path")
+              continue
+          }
+          
+          println(".... workspace = " + workspacePath)
+          
+          pathAsString = workspacePath.getRemote()
+          if (workspacePath.exists()) {
+              workspacePath.deleteRecursive()
+              println(".... deleted from location " + pathAsString)
+          } else {
+              println(".... nothing to delete at " + pathAsString)
+          }
+      } catch(Exception ex) {
+          println("... couldnot perform cleanup at workspace = " + workspacePath)
+          continue
+      }
   }  
 }
 
