@@ -55,7 +55,7 @@ def sendMail(host, sender, receivers, subject, text) {
 }
 
 def performCleanup(def node, def items) {
-  
+  result = true
   for (item in items) {
       try {
           jobName = item.getFullDisplayName()
@@ -91,9 +91,11 @@ def performCleanup(def node, def items) {
           }
       } catch(Exception ex) {
           println("... couldnot perform cleanup at workspace = " + workspacePath)
+          result = false
           continue
       }
-  }  
+  }
+  return result
 }
 
 
@@ -112,10 +114,15 @@ for (node in Jenkins.instance.nodes) {
     roundedSize = size / (1024  1024  1024) as int
 
     println("Jenkins Slave : " + node.getDisplayName() + " was cleaned up and free space: " + roundedSize + "GB")
-    sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} has been cleaned up")
+    //sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} has been cleaned up")
     /*computer.setTemporarilyOffline(true, new hudson.slaves.OfflineCause.ByCLI("disk cleanup"))*/
   
-    performCleanup(node, Jenkins.instance.items)
+    cleanup_result = performCleanup(node, Jenkins.instance.items)
+        if(cleanup_result) {
+            sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} has been cleaned up")
+        } else {
+            sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} clean up failed")
+        }
   
     computer.setTemporarilyOffline(false, null)
     }
