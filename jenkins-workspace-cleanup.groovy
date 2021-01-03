@@ -117,8 +117,7 @@ for (node in Jenkins.instance.nodes) {
     //sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} has been cleaned up")
     /*computer.setTemporarilyOffline(true, new hudson.slaves.OfflineCause.ByCLI("disk cleanup"))*/
   
-    cleanup_result = performCleanup(node, Jenkins.instance.items)
-        if(cleanup_result) {
+        if(performCleanup(node, Jenkins.instance.items)) {
             sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} has been cleaned up")
         } else {
             sendMail('host_server', "mail_sender", "mail_reciever", "Jenkins Slave workspace cleanup", "${node.getDisplayName()} clean up failed")
